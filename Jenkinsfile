@@ -10,7 +10,7 @@ pipeline {
                    branch: 'main'
             }
         }
-        stage('build and scan') {
+        stage('build, test and scan') {
             steps {
               withCredentials([string(credentialsId: 'sk_id', variable: 'SONAR_TOKEN')]) {
               withSonarQubeEnv('Sonar') {
@@ -22,6 +22,11 @@ pipeline {
             }
           }
         }
+        post {
+          always {
+            junit 'target/surefire-reports/*.xml'
+        }
+      }
      }
    }
 }
