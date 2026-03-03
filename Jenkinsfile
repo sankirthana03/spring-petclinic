@@ -1,8 +1,5 @@
 pipeline {
     agent {label 'JAVA'}
-    triggers {
-        pollSCM('* * * * *')
-    }
     stages {
         stage('git checkout') {
             steps {
@@ -21,11 +18,27 @@ pipeline {
                       -Dsonar.login=$SONAR_TOKEN'''
             }
           }
+         }
         }
         post {
           always {
             junit 'target/surefire-reports/*.xml'
-        }
+           }
+         }
+        stage('Binary file store') {
+          steps {
+            rtUpload (
+              serverId: 'JFROG',
+              spec: '''{
+              "files": [
+                  {
+                  "pattern": "target/*.jar",
+                  "target": "spcjava-spc/"
+                  }
+              ]  
+           }'''
+         )
+          rtPublishBuildInfo(serverId: 'JFROG')
       }
      }
    }
