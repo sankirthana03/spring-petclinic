@@ -20,11 +20,6 @@ pipeline {
           }
          }
         }
-        post {
-          always {
-            junit 'target/surefire-reports/*.xml'
-           }
-         }
         stage('Binary file store') {
           steps {
             rtUpload (
@@ -39,7 +34,12 @@ pipeline {
            }'''
          )
           rtPublishBuildInfo(serverId: 'JFROG')
+        }
       }
-     }
-   }
-}
+    }
+     post {
+          always {
+            junit 'target/surefire-reports/*.xml'
+           }
+         }
+  }
