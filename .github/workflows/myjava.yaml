@@ -1,0 +1,26 @@
+name: Java-Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: my-spc
+    runs-on: self-hosted
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v4
+
+    - name: Build Java with Maven
+      run: mvn package 
+
+    - name: SonarQube Scan 
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_1 }}  # analysis token associated to your project
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      run: |
+        mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sankirthana03_spring-petclinic -Dsonar.projectName=petclinic 
+        
