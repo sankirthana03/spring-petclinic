@@ -22,5 +22,5 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_1 }}  # analysis token associated to your project
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       run: |
-        mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sankirthana03_spring-petclinic -Dsonar.projectName=petclinic 
+        mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar -Dsonar.projectKey=sankirthana03_spring-petclinic -Dsonar.projectName=petclinic -Dsonar.organization=sankirthana03 
         
