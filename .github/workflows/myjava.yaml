@@ -18,9 +18,18 @@ jobs:
       run: mvn package 
 
     - name: SonarQube Scan 
+      uses: SonarSource/sonarqube-scan-action@v4
       env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      run: |
-        mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar -Dsonar.projectKey=sankirthana03_spring-petclinic -Dsonar.projectName=petclinic -Dsonar.organization=sankirthana03
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      with:
+        args: >
+          -Dsonar.organization=sankirthana03   
+          "-Dsonar.projectName=petclinic"
+          -Dsonar.projectKey=sankirthana03_spring-petclinic
+        # env:
+        #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        #   SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # run: |
+      #   mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar -Dsonar.projectKey=sankirthana03_spring-petclinic -Dsonar.projectName=petclinic -Dsonar.organization=sankirthana03
         
