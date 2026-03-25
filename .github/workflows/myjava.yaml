@@ -1,3 +1,34 @@
+# name: Java-Workflow
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     name: my-spc
+#     runs-on: self-hosted
+
+#     steps:
+#     - name: Git checkout
+#       uses: actions/checkout@v4
+
+#     - name: Build Java with Maven
+#       run: mvn package 
+
+#     - name: SonarQube Scan 
+#       uses: SonarSource/sonarqube-scan-action@v6
+#       env:
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+#       with:
+#         args: >
+#           -Dsonar.organization=sankirthana03   
+#           -Dsonar.projectName=petclinic
+#           -Dsonar.projectKey=sankirthana03_spring-petclinic
+#           -Dsonar.java.binaries=target/classes
+
 name: Java-Workflow
 
 on:
@@ -13,18 +44,18 @@ jobs:
     steps:
     - name: Git checkout
       uses: actions/checkout@v4
-
-    - name: Build Java with Maven
-      run: mvn package 
-
-    - name: SonarQube Scan 
-      uses: SonarSource/sonarqube-scan-action@v6
-      env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       with:
-        args: >
-          -Dsonar.organization=sankirthana03   
-          -Dsonar.projectName=petclinic
-          -Dsonar.projectKey=sankirthana03_spring-petclinic
-          -Dsonar.java.binaries=target/classes
+         fetch-depth: 0
+
+    # - name: Build Java with Maven
+    #   run: mvn package 
+
+    - name: Build and SonarQube Scan 
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      run: |
+        mvn clean verify sonar:sonar \
+        -Dsonar.projectKey=sankirthana03_spring-petclinic \
+        -Dsonar.projectName=petclinic \
+        -Dsonar.organization=sankirthana03 
