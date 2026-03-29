@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'JAVA' }
+    agent { label 'nginx container' }
 
     triggers {
         pollSCM('* * * * *')
