@@ -52,6 +52,7 @@ pipeline {
     //   }'''
     //   )
     //  }
+    // some
        stage('Pull image from DockerHub and push to ECR') {
             steps {
                 sh '''
