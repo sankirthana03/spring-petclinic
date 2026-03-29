@@ -59,11 +59,11 @@ pipeline {
                 sudo docker pull nginx:1.29
 
                 aws ecr get-login-password --region us-east-1 | \
-                docker login --username AWS --password-stdin 174323547094.dkr.ecr.us-east-1.amazonaws.com
+                sudo docker login --username AWS --password-stdin 174323547094.dkr.ecr.us-east-1.amazonaws.com
 
-                docker tag nginx:1.29 174323547094.dkr.ecr.us-east-1.amazonaws.com/dev/spc-repo:latest
+                sudo docker tag nginx:1.29 174323547094.dkr.ecr.us-east-1.amazonaws.com/dev/spc-repo:latest
 
-                docker push 174323547094.dkr.ecr.us-east-1.amazonaws.com/dev/spc-repo:latest
+                sudo docker push 174323547094.dkr.ecr.us-east-1.amazonaws.com/dev/spc-repo:latest
                 '''
             }
         }
