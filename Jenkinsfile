@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'nginx container' }
+    agent { label 'nginx-container' }
 
     triggers {
         pollSCM('* * * * *')
