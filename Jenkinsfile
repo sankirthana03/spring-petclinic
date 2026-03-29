@@ -56,7 +56,7 @@ pipeline {
        stage('Pull image from DockerHub and push to ECR') {
             steps {
                 sh '''
-                docker pull nginx:1.29
+                sudo docker pull nginx:1.29
 
                 aws ecr get-login-password --region us-east-1 | \
                 docker login --username AWS --password-stdin 174323547094.dkr.ecr.us-east-1.amazonaws.com
