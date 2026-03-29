@@ -1,13 +1,24 @@
 pipeline {
-    agent {label 'nginx-container'}
+    agent { label 'JAVA' }
+
     triggers {
         pollSCM('* * * * *')
     }
+
+    parameters {
+        choice(
+            name: 'goals',
+            choices: ['package', 'clean install', 'verify'],
+            description: 'Select the Maven goal to execute during the build'
+        )
+    }
+
     stages {
-        stage('git checkout') {
+
+        stage('Git Checkout') {
             steps {
-               git url: 'https://github.com/sankirthana03/spring-petclinic.git',
-                   branch: 'main'
+                git url: 'https://github.com/sankirthana03/spring-petclinic.git',
+                    branch: 'main'
             }
         }
     //     stage('build, test and scan') {
@@ -41,13 +52,19 @@ pipeline {
     //   }'''
     //   )
     //  }
-        stage('Pull image from dockerhub and push to ECR') {
-           steps {
-            sh '''docker image pull nginx:1.29 && \
-                  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 174323547094.dkr.ecr.us-east-1.amazonaws.com && \
-                  docker tag nginx:1.29 174323547094.dkr.ecr.us-east-1.amazonaws.com/dev/spc-repo:latest && \
-                  docker push 174323547094.dkr.ecr.us-east-1.amazonaws.com/dev/spc-repo:latest'''
-          }
+       stage('Pull image from DockerHub and push to ECR') {
+            steps {
+                sh '''
+                docker pull nginx:1.29
+
+                aws ecr get-login-password --region us-east-1 | \
+                docker login --username AWS --password-stdin 174323547094.dkr.ecr.us-east-1.amazonaws.com
+
+                docker tag nginx:1.29 174323547094.dkr.ecr.us-east-1.amazonaws.com/dev/spc-repo:latest
+
+                docker push 174323547094.dkr.ecr.us-east-1.amazonaws.com/dev/spc-repo:latest
+                '''
+            }
         }
-   }
+    }
 }
