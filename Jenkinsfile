@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'nginx-container' }
+    agent { label 'JAVA' }
 
     triggers {
         pollSCM('* * * * *')
@@ -21,43 +21,30 @@ pipeline {
                     branch: 'main'
             }
         }
-    //     stage('build, test and scan') {
-    //         steps {
-    //           withCredentials([string(credentialsId: 'sk_id', variable: 'SONAR_TOKEN')]) {
-    //           withSonarQubeEnv('Sonar') {
-    //             sh '''mvn package sonar:sonar \
-    //                   -Dsonar.projectKey=sankirthana03_spring-petclinic \
-    //                   -Dsonar.organization=sankirthana03 \
-    //                   -Dsonar.host.url=https://sonarcloud.io/ \
-    //                   -Dsonar.login=$SONAR_TOKEN'''
-    //         }
-    //       }
-    //     }
-    //     post {
-    //       always {
-    //         junit 'target/surefire-reports/*.xml'
-    //     }
-    //   }
-    //  }
-    //  stage('Binary file store') {
-    //    rtupload (
-    //       serverId: 'JFROG',
-    //       spec: '''{
-    //           "files": [
-    //               {
-    //               "pattern": "target/*.jar",
-    //               "target": "spcjava-spc"
-    //               }
-    //           ]  
-    //   }'''
-    //   )
-    //  }
-    // some
-       stage('Pull image from DockerHub and push to ECR') {
+
+        stage('Pull Docker Image') {
             steps {
                 sh '''
                 sudo docker pull nginx:1.29
+                '''
+            }
+        }
 
+        stage('Trivy Scan') {
+            steps {
+                sh '''
+                trivy image \
+                  --format template \
+                  --template "@contrib/junit.tpl" \
+                  -o trivy-report.xml \
+                  nginx:1.29
+                '''
+            }
+        }
+
+        stage('Push Image to ECR') {
+            steps {
+                sh '''
                 aws ecr get-login-password --region us-east-1 | \
                 sudo docker login --username AWS --password-stdin 174323547094.dkr.ecr.us-east-1.amazonaws.com
 
@@ -66,6 +53,13 @@ pipeline {
                 sudo docker push 174323547094.dkr.ecr.us-east-1.amazonaws.com/dev/spc-repo:latest
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'trivy-report.xml', fingerprint: true
+            junit 'trivy-report.xml'
         }
     }
 }
