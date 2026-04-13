@@ -1,5 +1,5 @@
 FROM maven:4.0.0-rc-5-eclipse-temurin-25-alpine AS build
-ADD ./app
+ADD . /app
 WORKDIR /app
 RUN mvn package
 
