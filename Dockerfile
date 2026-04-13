@@ -6,4 +6,4 @@ RUN mvn package
 FROM eclipse-temurin:25-noble AS runtime
 COPY --from=build /app/target/*.jar lion.jar
 EXPOSE 8080
-CMD ["java", "-jar", "*.jar"]
+CMD ["java", "-jar", "lion.jar"]
