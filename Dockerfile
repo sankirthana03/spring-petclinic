@@ -8,6 +8,7 @@ ARG myownuser=sankirthana
 ARG homedir=/devops
 RUN useradd -m -d ${homedir} -s /bin/bash ${myownuser}
 USER ${myownuser}
+WORKDIR /devops
 COPY --from=build /app/target/*.jar lion.jar
 EXPOSE 8080
 CMD ["java", "-jar", "lion.jar"]
