@@ -5,7 +5,7 @@ RUN mvn package
 
 FROM eclipse-temurin:25-noble AS runtime
 ENV project=prod
-ENV JAVA_HOME= /usr/lib/jvm/openjdk-17-jdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/openjdk-17-jdk-amd64
 ENV MAVEN_HOME=/opt/
 ARG myownuser=sankirthana
 ARG homedir=/devops
